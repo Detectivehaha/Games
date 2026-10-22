@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Plinko</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#15132e;--ink:#f1ecff;--dim:#8f89b8;--btn:#ff6b9d}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:ui-rounded,"Avenir Next",system-ui,sans-serif;overscroll-behavior:none}
+body{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px))}
+.top{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:baseline}
+.top b{font-size:36px;font-variant-numeric:tabular-nums}
+.top span{color:var(--dim);font-size:14px}
+#wrap{flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center}
+canvas{display:block}
+button{width:100%;max-width:420px;padding:16px;border:0;border-radius:16px;background:var(--btn);color:#1b0f1f;font:700 18px inherit;font-family:inherit;cursor:pointer;transition:transform .08s}
+button:active{transform:scale(.97)}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+</style>
+</head>
+<body>
+<div class="top"><div><span>Счёт</span><br><b id="score">0</b></div><div style="text-align:right"><span>Рекорд</span><br><b id="best" style="font-size:22px">0</b></div></div>
+<div id="wrap"><canvas id="c"></canvas></div>
+<button id="go">Запустить мяч</button>
+<script>
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor('#15132e'); tg.setBackgroundColor('#15132e'); } catch (e) {} }
+
+const W = 360, H = 560, R = 7, PR = 4, SLOT = 40, FLOOR = 470;
+const MULT = [10, 3, 1.5, 0.5, 0.2, 0.5, 1.5, 3, 10];
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const wrap = document.getElementById('wrap');
+let scale = 1, dpr = window.devicePixelRatio || 1;
+
+const pegs = [];
+for (let r = 0; r < 9; r++) {
+  const odd = r % 2, n = odd ? 8 : 9;
+  for (let k = 0; k < n; k++) pegs.push({ x: (odd ? 40 : 20) + k * 40, y: 90 + r * 38 });
+}
+
+let balls = [], popups = [], score = 0, best = 0;
+try { best = +localStorage.getItem('plinko_best') || 0; } catch (e) {}
+const $s = document.getElementById('score'), $b = document.getElementById('best');
+$b.textContent = best;
+
+function resize() {
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  scale = Math.min(w / W, h / H, 1.4);
+  cv.style.width = W * scale + 'px';
+  cv.style.height = H * scale + 'px';
+  cv.width = W * scale * dpr;
+  cv.height = H * scale * dpr;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function launch() {
+  if (balls.length >= 25) return;
+  balls.push({ x: W / 2 + (Math.random() - .5) * 50, y: 22, vx: (Math.random() - .5) * 40, vy: 0, landed: false, t: 0, slot: 0 });
+}
+document.getElementById('go').addEventListener('click', launch);
+
+function land(b) {
+  const pts = Math.round(MULT[b.slot] * 10);
+  score += pts;
+  $s.textContent = score;
+  if (score > best) {
+    best = score; $b.textContent = best;
+    try { localStorage.setItem('plinko_best', best); } catch (e) {}
+  }
+  popups.push({ x: b.slot * SLOT + SLOT / 2, y: 455, t: 0, text: '+' + pts, big: MULT[b.slot] >= 3 });
+  try {
+    if (tg && tg.HapticFeedback) {
+      if (MULT[b.slot] >= 3) tg.HapticFeedback.notificationOccurred('success');
+      else tg.HapticFeedback.impactOccurred('light');
+    }
+  } catch (e) {}
+}
+
+function step(dt) {
+  for (const b of balls) {
+    if (b.landed) {
+      b.t += dt;
+      const cx = b.slot * SLOT + SLOT / 2;
+      b.x += (cx - b.x) * Math.min(1, dt * 12);
+      b.y += (505 - b.y) * Math.min(1, dt * 10);
+      if (b.t > 0.4 && !b.done) { b.done = true; land(b); }
+      continue;
+    }
+    b.vy += 900 * dt;
+    b.x += b.vx * dt;
+    b.y += b.vy * dt;
+    for (const p of pegs) {
+      const dx = b.x - p.x, dy = b.y - p.y, d = Math.hypot(dx, dy), m = R + PR;
+      if (d < m && d > 0) {
+        const nx = dx / d, ny = dy / d;
+        b.x = p.x + nx * m; b.y = p.y + ny * m;
+        const vn = b.vx * nx + b.vy * ny;
+        if (vn < 0) {
+          b.vx -= 1.55 * vn * nx; b.vy -= 1.55 * vn * ny;
+          b.vx += (Math.random() - .5) * 30;
+        }
+      }
+    }
+    if (b.x < R) { b.x = R; b.vx = Math.abs(b.vx) * .5; }
+    if (b.x > W - R) { b.x = W - R; b.vx = -Math.abs(b.vx) * .5; }
+    if (b.y > FLOOR) {
+      b.landed = true; b.t = 0;
+      b.slot = Math.max(0, Math.min(8, Math.floor(b.x / SLOT)));
+    }
+  }
+  balls = balls.filter(b => !(b.done && b.t > 0.45));
+  for (const p of popups) p.t += dt;
+  popups = popups.filter(p => p.t < 0.9);
+}
+
+function slotColor(m) { return m >= 10 ? '#ff6b9d' : m >= 3 ? '#ffd166' : m >= 1.5 ? '#7be0c3' : '#6c63b5'; }
+
+function draw() {
+  ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  for (let i = 0; i < 9; i++) {
+    ctx.globalAlpha = .22; ctx.fillStyle = slotColor(MULT[i]);
+    ctx.fillRect(i * SLOT + 1, FLOOR, SLOT - 2, 70);
+    ctx.globalAlpha = 1; ctx.fillStyle = slotColor(MULT[i]);
+    ctx.font = '700 13px system-ui,sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('×' + MULT[i], i * SLOT + SLOT / 2, 548);
+  }
+  ctx.strokeStyle = '#8f89b8'; ctx.lineWidth = 2;
+  for (let i = 0; i <= 9; i++) {
+    ctx.beginPath(); ctx.moveTo(i * SLOT, FLOOR + 6); ctx.lineTo(i * SLOT, 560); ctx.stroke();
+  }
+  ctx.fillStyle = '#f1ecff';
+  for (const p of pegs) { ctx.beginPath(); ctx.arc(p.x, p.y, PR, 0, 7); ctx.fill(); }
+  for (const b of balls) {
+    ctx.fillStyle = '#ffd166';
+    ctx.beginPath(); ctx.arc(b.x, b.y, R, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.55)';
+    ctx.beginPath(); ctx.arc(b.x - 2, b.y - 2, 2, 0, 7); ctx.fill();
+  }
+  for (const p of popups) {
+    ctx.globalAlpha = 1 - p.t / .9;
+    ctx.fillStyle = p.big ? '#ffd166' : '#f1ecff';
+    ctx.font = '800 ' + (p.big ? 20 : 16) + 'px system-ui,sans-serif';
+    ctx.fillText(p.text, p.x, p.y - p.t * 50);
+  }
+  ctx.globalAlpha = 1;
+}
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.033, (now - last) / 1000); last = now;
+  step(dt / 2); step(dt / 2);
+  draw();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
