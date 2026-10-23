@@ -6,32 +6,77 @@
 <title>Plinko</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root{--bg:#15132e;--ink:#f1ecff;--dim:#8f89b8;--btn:#ff6b9d}
+:root{--bg:#15132e;--ink:#f1ecff;--dim:#8f89b8;--btn:#ff6b9d;--card:#221f47}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%;background:var(--bg);color:var(--ink);font-family:ui-rounded,"Avenir Next",system-ui,sans-serif;overscroll-behavior:none}
-body{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px))}
-.top{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:baseline}
-.top b{font-size:36px;font-variant-numeric:tabular-nums}
+body{display:flex;flex-direction:column;align-items:center;padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px))}
+.screen{display:none;flex-direction:column;align-items:center;width:100%;max-width:420px;flex:1;min-height:0;gap:12px}
+.screen.on{display:flex}
+#menu,#over{justify-content:center}
+h1{font-size:48px;letter-spacing:1px}
+h2{font-size:26px}
+.sub{color:var(--dim);font-size:15px;text-align:center}
+button{width:100%;padding:16px;border:0;border-radius:16px;background:var(--btn);color:#1b0f1f;font:700 18px inherit;font-family:inherit;cursor:pointer;transition:transform .08s}
+button.alt{background:var(--card);color:var(--ink)}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.4}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.top{width:100%;display:flex;justify-content:space-between;align-items:baseline}
+.top b{font-size:34px;font-variant-numeric:tabular-nums}
 .top span{color:var(--dim);font-size:14px}
 #wrap{flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center}
 canvas{display:block}
-button{width:100%;max-width:420px;padding:16px;border:0;border-radius:16px;background:var(--btn);color:#1b0f1f;font:700 18px inherit;font-family:inherit;cursor:pointer;transition:transform .08s}
-button:active{transform:scale(.97)}
-button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+ol{list-style:none;width:100%;padding:0;flex:1;overflow:auto}
+li{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+li .n{color:var(--dim);width:24px;font-variant-numeric:tabular-nums}
+li .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+li .sc{font-weight:800;font-variant-numeric:tabular-nums}
+li.me{outline:2px solid #ffd166}
+.big{font-size:64px;font-weight:800;color:#ffd166}
 </style>
 </head>
 <body>
-<div class="top"><div><span>Счёт</span><br><b id="score">0</b></div><div style="text-align:right"><span>Рекорд</span><br><b id="best" style="font-size:22px">0</b></div></div>
-<div id="wrap"><canvas id="c"></canvas></div>
-<button id="go">Запустить мяч</button>
+
+<section id="menu" class="screen on">
+  <h1>Plinko</h1>
+  <p class="sub">10 шариков. Лови момент и бросай.</p>
+  <button id="bPlay">Играть</button>
+  <button id="bLb" class="alt">Таблица лидеров</button>
+</section>
+
+<section id="game" class="screen">
+  <div class="top">
+    <div><span>Счёт</span><br><b id="score">0</b></div>
+    <div style="text-align:right"><span>Шариков</span><br><b id="left">10</b></div>
+  </div>
+  <div id="wrap"><canvas id="c"></canvas></div>
+  <button id="go">Бросить</button>
+</section>
+
+<section id="over" class="screen">
+  <h2>Игра окончена</h2>
+  <div class="big" id="final">0</div>
+  <p class="sub" id="rank"></p>
+  <button id="bAgain">Играть снова</button>
+  <button id="bLb2" class="alt">Таблица лидеров</button>
+  <button id="bMenu" class="alt">В меню</button>
+</section>
+
+<section id="lb" class="screen">
+  <h2>Таблица лидеров</h2>
+  <p class="sub">Лучшие результаты на этом устройстве</p>
+  <ol id="list"></ol>
+  <button id="bBack" class="alt">Назад</button>
+</section>
+
 <script>
 const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor('#15132e'); tg.setBackgroundColor('#15132e'); } catch (e) {} }
+const $ = id => document.getElementById(id);
 
-const W = 360, H = 560, R = 7, PR = 4, SLOT = 40, FLOOR = 470;
+const W = 360, H = 560, R = 7, PR = 4, SLOT = 40, FLOOR = 470, TOTAL = 10;
 const MULT = [10, 3, 1.5, 0.5, 0.2, 0.5, 1.5, 3, 10];
-const cv = document.getElementById('c'), ctx = cv.getContext('2d');
-const wrap = document.getElementById('wrap');
+const cv = $('c'), ctx = cv.getContext('2d'), wrap = $('wrap');
 let scale = 1, dpr = window.devicePixelRatio || 1;
 
 const pegs = [];
@@ -40,13 +85,19 @@ for (let r = 0; r < 9; r++) {
   for (let k = 0; k < n; k++) pegs.push({ x: (odd ? 40 : 20) + k * 40, y: 90 + r * 38 });
 }
 
-let balls = [], popups = [], score = 0, best = 0;
-try { best = +localStorage.getItem('plinko_best') || 0; } catch (e) {}
-const $s = document.getElementById('score'), $b = document.getElementById('best');
-$b.textContent = best;
+let balls = [], popups = [], score = 0, left = TOTAL, playing = false;
+let dx = W / 2, dir = 1, lastEntry = null;
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  $(id).classList.add('on');
+  if (id === 'game') resize();
+  if (id === 'lb') renderLb();
+}
 
 function resize() {
   const w = wrap.clientWidth, h = wrap.clientHeight;
+  if (!w || !h) return;
   scale = Math.min(w / W, h / H, 1.4);
   cv.style.width = W * scale + 'px';
   cv.style.height = H * scale + 'px';
@@ -54,22 +105,58 @@ function resize() {
   cv.height = H * scale * dpr;
 }
 window.addEventListener('resize', resize);
-resize();
 
-function launch() {
-  if (balls.length >= 25) return;
-  balls.push({ x: W / 2 + (Math.random() - .5) * 50, y: 22, vx: (Math.random() - .5) * 40, vy: 0, landed: false, t: 0, slot: 0 });
+/* таблица лидеров (хранится на устройстве) */
+function loadLb() { try { return JSON.parse(localStorage.getItem('plinko_lb')) || []; } catch (e) { return []; } }
+function saveLb(a) { try { localStorage.setItem('plinko_lb', JSON.stringify(a)); } catch (e) {} }
+function playerName() {
+  try { const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user; if (u && u.first_name) return u.first_name; } catch (e) {}
+  return 'Игрок';
 }
-document.getElementById('go').addEventListener('click', launch);
+function renderLb() {
+  const a = loadLb(), ul = $('list');
+  ul.innerHTML = '';
+  if (!a.length) { ul.innerHTML = '<p class="sub">Пока пусто. Сыграйте первую игру!</p>'; return; }
+  a.forEach((e, i) => {
+    const li = document.createElement('li');
+    if (e === lastEntry || (lastEntry && e.t === lastEntry.t)) li.className = 'me';
+    li.innerHTML = '<span class="n">' + (i + 1) + '</span><span class="nm"></span><span class="sc">' + e.s + '</span>';
+    li.querySelector('.nm').textContent = e.n;
+    ul.appendChild(li);
+  });
+}
 
+/* игра */
+function startGame() {
+  score = 0; left = TOTAL; balls = []; popups = []; playing = true; dx = W / 2; dir = 1;
+  hud(); show('game');
+}
+function hud() {
+  $('score').textContent = score;
+  $('left').textContent = left;
+  $('go').disabled = left <= 0;
+}
+function launch() {
+  if (!playing || left <= 0) return;
+  left--; hud();
+  balls.push({ x: dx, y: 22, vx: (Math.random() - .5) * 20, vy: 0, landed: false, t: 0, slot: 0 });
+}
+function finish() {
+  playing = false;
+  const entry = { n: playerName(), s: score, t: Date.now() };
+  const a = loadLb(); a.push(entry);
+  a.sort((x, y) => y.s - x.s);
+  const top = a.slice(0, 10);
+  saveLb(top);
+  lastEntry = entry;
+  const rank = top.findIndex(e => e.t === entry.t) + 1;
+  $('final').textContent = score;
+  $('rank').textContent = rank ? 'Место в таблице: ' + rank : 'В топ-10 не попали, попробуйте ещё';
+  setTimeout(() => show('over'), 500);
+}
 function land(b) {
   const pts = Math.round(MULT[b.slot] * 10);
-  score += pts;
-  $s.textContent = score;
-  if (score > best) {
-    best = score; $b.textContent = best;
-    try { localStorage.setItem('plinko_best', best); } catch (e) {}
-  }
+  score += pts; hud();
   popups.push({ x: b.slot * SLOT + SLOT / 2, y: 455, t: 0, text: '+' + pts, big: MULT[b.slot] >= 3 });
   try {
     if (tg && tg.HapticFeedback) {
@@ -80,6 +167,11 @@ function land(b) {
 }
 
 function step(dt) {
+  if (playing && left > 0) {
+    dx += dir * 170 * dt;
+    if (dx > W - R - 4) { dx = W - R - 4; dir = -1; }
+    if (dx < R + 4) { dx = R + 4; dir = 1; }
+  }
   for (const b of balls) {
     if (b.landed) {
       b.t += dt;
@@ -93,9 +185,9 @@ function step(dt) {
     b.x += b.vx * dt;
     b.y += b.vy * dt;
     for (const p of pegs) {
-      const dx = b.x - p.x, dy = b.y - p.y, d = Math.hypot(dx, dy), m = R + PR;
+      const ddx = b.x - p.x, ddy = b.y - p.y, d = Math.hypot(ddx, ddy), m = R + PR;
       if (d < m && d > 0) {
-        const nx = dx / d, ny = dy / d;
+        const nx = ddx / d, ny = ddy / d;
         b.x = p.x + nx * m; b.y = p.y + ny * m;
         const vn = b.vx * nx + b.vy * ny;
         if (vn < 0) {
@@ -114,23 +206,32 @@ function step(dt) {
   balls = balls.filter(b => !(b.done && b.t > 0.45));
   for (const p of popups) p.t += dt;
   popups = popups.filter(p => p.t < 0.9);
+  if (playing && left === 0 && balls.length === 0 && popups.length === 0) finish();
 }
 
 function slotColor(m) { return m >= 10 ? '#ff6b9d' : m >= 3 ? '#ffd166' : m >= 1.5 ? '#7be0c3' : '#6c63b5'; }
 
 function draw() {
+  if (!$('game').classList.contains('on')) return;
   ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
   ctx.clearRect(0, 0, W, H);
+  ctx.textAlign = 'center';
   for (let i = 0; i < 9; i++) {
     ctx.globalAlpha = .22; ctx.fillStyle = slotColor(MULT[i]);
     ctx.fillRect(i * SLOT + 1, FLOOR, SLOT - 2, 70);
     ctx.globalAlpha = 1; ctx.fillStyle = slotColor(MULT[i]);
-    ctx.font = '700 13px system-ui,sans-serif'; ctx.textAlign = 'center';
+    ctx.font = '700 13px system-ui,sans-serif';
     ctx.fillText('×' + MULT[i], i * SLOT + SLOT / 2, 548);
   }
   ctx.strokeStyle = '#8f89b8'; ctx.lineWidth = 2;
-  for (let i = 0; i <= 9; i++) {
-    ctx.beginPath(); ctx.moveTo(i * SLOT, FLOOR + 6); ctx.lineTo(i * SLOT, 560); ctx.stroke();
+  for (let i = 0; i <= 9; i++) { ctx.beginPath(); ctx.moveTo(i * SLOT, FLOOR + 6); ctx.lineTo(i * SLOT, 560); ctx.stroke(); }
+  /* рельс и ездящий шарик */
+  if (playing && left > 0) {
+    ctx.strokeStyle = 'rgba(143,137,184,.35)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(4, 22); ctx.lineTo(W - 4, 22); ctx.stroke();
+    ctx.setLineDash([4, 6]); ctx.beginPath(); ctx.moveTo(dx, 34); ctx.lineTo(dx, 80); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#ffd166';
+    ctx.beginPath(); ctx.arc(dx, 22, R, 0, 7); ctx.fill();
   }
   ctx.fillStyle = '#f1ecff';
   for (const p of pegs) { ctx.beginPath(); ctx.arc(p.x, p.y, PR, 0, 7); ctx.fill(); }
@@ -157,6 +258,14 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
+
+$('bPlay').onclick = startGame;
+$('bAgain').onclick = startGame;
+$('bLb').onclick = () => show('lb');
+$('bLb2').onclick = () => show('lb');
+$('bMenu').onclick = () => show('menu');
+$('bBack').onclick = () => show('menu');
+$('go').onclick = launch;
 </script>
 </body>
 </html>
