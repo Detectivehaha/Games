@@ -33,15 +33,72 @@ li .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 li .sc{font-weight:800;font-variant-numeric:tabular-nums}
 li.me{outline:2px solid #ffd166}
 .big{font-size:64px;font-weight:800;color:#ffd166}
+button.card{position:relative;overflow:hidden;height:150px;padding:0;border-radius:24px;text-align:left;color:#fff;background:#222;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+button.card svg{position:absolute;inset:0;width:100%;height:100%}
+button.card .t{position:absolute;left:18px;bottom:12px;font-size:32px;font-weight:900;font-style:italic;letter-spacing:.5px;text-shadow:0 3px 0 rgba(0,0,0,.35)}
 </style>
 </head>
 <body>
 
 <section id="menu" class="screen on">
-  <h1>Plinko</h1>
-  <p class="sub">10 balls. Pick your moment and drop.</p>
-  <button id="bPlay">Play</button>
+  <h1>Mini Games</h1>
+  <button id="bPlay" class="card" aria-label="Plinko">
+    <svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3ddc6b"/><stop offset="1" stop-color="#0b5d36"/></linearGradient></defs>
+      <rect width="340" height="150" fill="url(#gp)"/>
+      <g fill="#eafff0" opacity=".92">
+        <circle cx="250" cy="30" r="3.5"/>
+        <circle cx="238" cy="48" r="3.5"/><circle cx="262" cy="48" r="3.5"/>
+        <circle cx="226" cy="66" r="3.5"/><circle cx="250" cy="66" r="3.5"/><circle cx="274" cy="66" r="3.5"/>
+        <circle cx="214" cy="84" r="3.5"/><circle cx="238" cy="84" r="3.5"/><circle cx="262" cy="84" r="3.5"/><circle cx="286" cy="84" r="3.5"/>
+        <circle cx="202" cy="102" r="3.5"/><circle cx="226" cy="102" r="3.5"/><circle cx="250" cy="102" r="3.5"/><circle cx="274" cy="102" r="3.5"/><circle cx="298" cy="102" r="3.5"/>
+      </g>
+      <circle cx="250" cy="13" r="8" fill="#ffd166"/><circle cx="247" cy="10" r="2.5" fill="#fff" opacity=".7"/>
+      <g opacity=".95">
+        <rect x="190" y="122" width="24" height="28" fill="#6c63b5"/><rect x="214" y="122" width="24" height="28" fill="#7be0c3"/>
+        <rect x="238" y="122" width="24" height="28" fill="#ff6b9d"/><rect x="262" y="122" width="24" height="28" fill="#ffd166"/>
+        <rect x="286" y="122" width="24" height="28" fill="#7be0c3"/>
+      </g>
+    </svg>
+    <span class="t">PLINKO</span>
+  </button>
+  <button id="bArena" class="card" aria-label="Arena">
+    <svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><linearGradient id="ga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6a4d"/><stop offset="1" stop-color="#7d1456"/></linearGradient></defs>
+      <rect width="340" height="150" fill="url(#ga)"/>
+      <g stroke="#fff" opacity=".1" stroke-width="1">
+        <path d="M0 30H340M0 60H340M0 90H340M0 120H340M60 0V150M120 0V150M180 0V150M240 0V150M300 0V150"/>
+      </g>
+      <rect x="14" y="14" width="46" height="22" rx="11" fill="#fff"/>
+      <text x="37" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="800" font-size="13" fill="#15132e">PVP</text>
+      <line x1="228" y1="72" x2="262" y2="36" stroke="#efe6cf" stroke-width="8" stroke-linecap="round"/>
+      <line x1="228" y1="72" x2="262" y2="36" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <line x1="278" y1="84" x2="246" y2="116" stroke="#4da3ff" stroke-width="8" stroke-linecap="round"/>
+      <line x1="278" y1="84" x2="246" y2="116" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="212" cy="86" r="24" fill="#ff6b9d"/><circle cx="204" cy="80" r="5" fill="#fff" opacity=".6"/>
+      <circle cx="206" cy="90" r="4" fill="#15132e"/><circle cx="220" cy="90" r="4" fill="#15132e"/>
+      <circle cx="292" cy="70" r="24" fill="#5ee06b"/><circle cx="284" cy="64" r="5" fill="#fff" opacity=".6"/>
+      <circle cx="286" cy="74" r="4" fill="#15132e"/><circle cx="300" cy="74" r="4" fill="#15132e"/>
+      <g stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M252 46l8-10M258 52l12-4M246 40l-2-12"/></g>
+    </svg>
+    <span class="t">ARENA</span>
+  </button>
   <button id="bLb" class="alt">Leaderboard</button>
+</section>
+
+<section id="amode" class="screen" style="justify-content:center">
+  <h2>Arena</h2>
+  <p class="sub">Two balls, two laser swords. Last one standing wins.</p>
+  <button id="bBot">Play vs Bot</button>
+  <button id="bFriend" class="alt">Play vs Friend (same phone)</button>
+  <button id="bAback" class="alt">Back</button>
+</section>
+
+<section id="arena" class="screen">
+  <p class="sub" id="aTitle" style="font-size:16px;color:var(--ink)"></p>
+  <div id="awrap" style="flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center"><canvas id="ac" style="touch-action:none"></canvas></div>
+  <button id="aBtn">Fight!</button>
+  <button id="aQuit" class="alt">Back</button>
 </section>
 
 <section id="game" class="screen">
@@ -93,6 +150,7 @@ function show(id) {
   $(id).classList.add('on');
   if (id === 'game') resize();
   if (id === 'lb') renderLb();
+  if (id === 'arena') aResize();
 }
 
 function resize() {
@@ -269,11 +327,206 @@ function draw() {
   ctx.globalAlpha = 1;
 }
 
+/* ===== ARENA ===== */
+const AW = 360, AH = 430, AT = 70, AR = 16, ASPD = 220, ALEN = 50, AHP = 100, ADMG = 25, ASPIN = 8, ATIME = 60;
+const cv2 = $('ac'), cx2 = cv2.getContext('2d'), awrap = $('awrap');
+let aScale = 1, A = null, aMode = 'bot';
+
+function aResize() {
+  const w = awrap.clientWidth, h = awrap.clientHeight;
+  if (!w || !h) return;
+  aScale = Math.min(w / AW, h / AH, 1.4);
+  cv2.style.width = AW * aScale + 'px';
+  cv2.style.height = AH * aScale + 'px';
+  cv2.width = AW * aScale * dpr;
+  cv2.height = AH * aScale * dpr;
+}
+window.addEventListener('resize', aResize);
+
+function aMk(x, y, col, sw, spin, aim) { return { x, y, vx: 0, vy: 0, col, sw, spin, sa: 0, aim, hp: AHP, disp: AHP, inv: 0 }; }
+function aStart(mode) {
+  aMode = mode;
+  A = { ph: 'aim', who: 0, t: 0, cl: 0, sparks: [], msg: '',
+    f: [aMk(90, 250, '#ff6b9d', '#efe6cf', ASPIN, -0.5), aMk(270, 250, '#5ee06b', '#4da3ff', -ASPIN, Math.PI + 0.5)] };
+  aText();
+}
+function aText() {
+  const t = $('aTitle'), b = $('aBtn');
+  b.style.display = '';
+  if (A.ph === 'aim') {
+    if (aMode === 'bot') { t.textContent = 'Tap the arena to aim your pink ball'; b.textContent = 'Fight!'; }
+    else if (A.who === 0) { t.textContent = 'Player 1: tap to aim the pink ball'; b.textContent = 'Lock in'; }
+    else { t.textContent = 'Player 2: tap to aim the green ball'; b.textContent = 'Fight!'; }
+  } else if (A.ph === 'fight') { t.textContent = 'Fight!'; b.style.display = 'none'; }
+  else { t.textContent = A.msg; b.textContent = 'Rematch'; }
+}
+function aFight() {
+  for (const f of A.f) { f.vx = Math.cos(f.aim) * ASPD; f.vy = Math.sin(f.aim) * ASPD; }
+  A.ph = 'fight'; aText();
+}
+function aNext() {
+  if (!A) return;
+  if (A.ph === 'over') { aStart(aMode); return; }
+  if (A.ph !== 'aim') return;
+  if (aMode === 'friend' && A.who === 0) { A.who = 1; aText(); return; }
+  if (aMode === 'bot') A.f[1].aim = Math.random() * Math.PI * 2;
+  aFight();
+}
+function aAim(e) {
+  if (!A || A.ph !== 'aim') return;
+  const r = cv2.getBoundingClientRect(), f = A.f[A.who];
+  f.aim = Math.atan2((e.clientY - r.top) / r.height * AH - f.y, (e.clientX - r.left) / r.width * AW - f.x);
+}
+cv2.addEventListener('pointerdown', aAim);
+cv2.addEventListener('pointermove', e => { if (e.buttons) aAim(e); });
+
+function aSeg(f) {
+  const c = Math.cos(f.sa), s = Math.sin(f.sa);
+  return [[f.x + c * (AR + 2), f.y + s * (AR + 2)], [f.x + c * (AR + ALEN), f.y + s * (AR + ALEN)]];
+}
+function aDsp(a, b, p) {
+  const vx = b[0] - a[0], vy = b[1] - a[1];
+  let t = ((p.x - a[0]) * vx + (p.y - a[1]) * vy) / (vx * vx + vy * vy);
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(a[0] + vx * t - p.x, a[1] + vy * t - p.y);
+}
+function aCross(a, b, c, d) {
+  const o = (p, q, r) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+  return o(a, b, c) !== o(a, b, d) && o(c, d, a) !== o(c, d, b);
+}
+function aRR(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function aSpark(x, y, col) {
+  for (let i = 0; i < 6; i++) { const an = Math.random() * 6.28; A.sparks.push({ x, y, vx: Math.cos(an) * 90, vy: Math.sin(an) * 90, t: 0, col }); }
+}
+function aHaptic(kind) {
+  try { if (tg && tg.HapticFeedback) { if (kind === 'end') tg.HapticFeedback.notificationOccurred('success'); else tg.HapticFeedback.impactOccurred('medium'); } } catch (e) {}
+}
+
+function aStep(dt) {
+  if (!A || !$('arena').classList.contains('on')) return;
+  const p = A.f[0], q = A.f[1];
+  for (const f of A.f) { f.sa += f.spin * dt; f.disp += (f.hp - f.disp) * Math.min(1, dt * 6); }
+  for (const s of A.sparks) { s.t += dt; s.x += s.vx * dt; s.y += s.vy * dt; }
+  A.sparks = A.sparks.filter(s => s.t < 0.35);
+  if (A.ph !== 'fight') return;
+  A.t += dt; A.cl = Math.max(0, A.cl - dt);
+  for (const f of A.f) {
+    f.x += f.vx * dt; f.y += f.vy * dt; f.inv = Math.max(0, f.inv - dt);
+    if (f.x < AR) { f.x = AR; f.vx = Math.abs(f.vx); }
+    if (f.x > AW - AR) { f.x = AW - AR; f.vx = -Math.abs(f.vx); }
+    if (f.y < AT + AR) { f.y = AT + AR; f.vy = Math.abs(f.vy); }
+    if (f.y > AH - AR) { f.y = AH - AR; f.vy = -Math.abs(f.vy); }
+  }
+  const dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy);
+  if (d < 2 * AR && d > 0) {
+    const nx = dx / d, ny = dy / d, ov = (2 * AR - d) / 2;
+    p.x -= nx * ov; p.y -= ny * ov; q.x += nx * ov; q.y += ny * ov;
+    const vp = p.vx * nx + p.vy * ny, vq = q.vx * nx + q.vy * ny;
+    if (vp > vq) { p.vx += (vq - vp) * nx; p.vy += (vq - vp) * ny; q.vx += (vp - vq) * nx; q.vy += (vp - vq) * ny; }
+  }
+  for (const f of A.f) { const sp = Math.hypot(f.vx, f.vy) || 1; f.vx *= ASPD / sp; f.vy *= ASPD / sp; }
+  const sp = aSeg(p), sq = aSeg(q);
+  if (A.cl === 0 && aCross(sp[0], sp[1], sq[0], sq[1])) {
+    p.spin *= -1; q.spin *= -1; A.cl = 0.3;
+    aSpark((sp[1][0] + sq[1][0]) / 2, (sp[1][1] + sq[1][1]) / 2, '#ffffff');
+  }
+  [[p, q, sp], [q, p, sq]].forEach(([a, b, sg]) => {
+    if (b.inv === 0 && aDsp(sg[0], sg[1], b) < AR + 3) {
+      b.hp = Math.max(0, b.hp - ADMG); b.inv = 0.5;
+      aSpark(b.x, b.y, a.sw); aHaptic('hit');
+    }
+  });
+  if (p.hp <= 0 || q.hp <= 0 || A.t >= ATIME) {
+    A.ph = 'over';
+    const w = p.hp === q.hp ? -1 : (p.hp > q.hp ? 0 : 1);
+    A.msg = w < 0 ? 'Draw!' : aMode === 'bot' ? (w === 0 ? 'You win!' : 'Bot wins!') : 'Player ' + (w + 1) + ' wins!';
+    aText(); aHaptic('end');
+  }
+}
+
+function aDraw() {
+  if (!A || !$('arena').classList.contains('on')) return;
+  const c = cx2;
+  c.setTransform(aScale * dpr, 0, 0, aScale * dpr, 0, 0);
+  c.clearRect(0, 0, AW, AH);
+  /* square field */
+  c.fillStyle = '#1b1840'; aRR(c, 1, AT, AW - 2, AH - AT - 1, 14); c.fill();
+  c.strokeStyle = 'rgba(143,137,184,.16)'; c.lineWidth = 1;
+  for (let g = 40; g < AW - 2; g += 40) { c.beginPath(); c.moveTo(g, AT + 6); c.lineTo(g, AH - 7); c.stroke(); }
+  for (let g = AT + 40; g < AH - 7; g += 40) { c.beginPath(); c.moveTo(7, g); c.lineTo(AW - 7, g); c.stroke(); }
+  c.strokeStyle = 'rgba(143,137,184,.6)'; c.lineWidth = 2; aRR(c, 1, AT, AW - 2, AH - AT - 1, 14); c.stroke();
+  /* HP cards */
+  const names = aMode === 'bot' ? ['YOU', 'BOT'] : ['P1', 'P2'];
+  [[10, A.f[0], names[0], 'left'], [220, A.f[1], names[1], 'right']].forEach(([x, f, nm, al]) => {
+    const w = 130, fw = Math.max(0, w * f.disp / AHP);
+    c.textAlign = al; c.fillStyle = f.col; c.font = '800 13px system-ui,sans-serif';
+    c.fillText(nm, al === 'left' ? x : x + w, 21);
+    c.fillStyle = '#221f47'; aRR(c, x, 28, w, 22, 11); c.fill();
+    c.save(); aRR(c, x, 28, w, 22, 11); c.clip();
+    const bx = al === 'left' ? x : x + w - fw;
+    c.fillStyle = f.col; c.fillRect(bx, 28, fw, 22);
+    c.fillStyle = 'rgba(255,255,255,.28)'; c.fillRect(bx, 28, fw, 8);
+    c.strokeStyle = 'rgba(21,19,46,.85)'; c.lineWidth = 2;
+    for (let k = 1; k < 4; k++) { c.beginPath(); c.moveTo(x + w * k / 4, 28); c.lineTo(x + w * k / 4, 50); c.stroke(); }
+    c.restore();
+    c.strokeStyle = 'rgba(255,255,255,.3)'; c.lineWidth = 1.5; aRR(c, x, 28, w, 22, 11); c.stroke();
+    c.textAlign = 'center'; c.font = '800 12px system-ui,sans-serif';
+    c.lineWidth = 3; c.strokeStyle = '#15132e'; c.strokeText(Math.round(f.hp) + '%', x + w / 2, 43);
+    c.fillStyle = '#ffffff'; c.fillText(Math.round(f.hp) + '%', x + w / 2, 43);
+  });
+  /* timer ring */
+  const tl = A.ph === 'fight' ? Math.max(0, ATIME - A.t) : ATIME, fr = tl / ATIME;
+  c.lineWidth = 6; c.lineCap = 'round';
+  c.strokeStyle = '#221f47'; c.beginPath(); c.arc(AW / 2, 36, 24, 0, 7); c.stroke();
+  if (fr > 0) {
+    c.strokeStyle = tl < 10 ? '#ff5a5f' : '#7be0c3';
+    c.beginPath(); c.arc(AW / 2, 36, 24, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * fr); c.stroke();
+  }
+  c.fillStyle = tl < 10 ? '#ff8a8e' : '#f1ecff'; c.font = '800 18px system-ui,sans-serif'; c.textAlign = 'center';
+  c.fillText(Math.ceil(tl), AW / 2, 42);
+  /* aim arrow */
+  if (A.ph === 'aim') {
+    const f = A.f[A.who], ex = f.x + Math.cos(f.aim) * 80, ey = f.y + Math.sin(f.aim) * 80;
+    c.strokeStyle = f.col; c.lineWidth = 3; c.setLineDash([6, 6]);
+    c.beginPath(); c.moveTo(f.x, f.y); c.lineTo(ex, ey); c.stroke(); c.setLineDash([]);
+    c.fillStyle = f.col; c.beginPath();
+    c.moveTo(ex + Math.cos(f.aim) * 8, ey + Math.sin(f.aim) * 8);
+    c.lineTo(ex + Math.cos(f.aim + 2.5) * 12, ey + Math.sin(f.aim + 2.5) * 12);
+    c.lineTo(ex + Math.cos(f.aim - 2.5) * 12, ey + Math.sin(f.aim - 2.5) * 12);
+    c.fill();
+  }
+  /* laser swords */
+  c.lineCap = 'round';
+  for (const f of A.f) {
+    const sg = aSeg(f);
+    c.shadowBlur = 14; c.shadowColor = f.sw; c.strokeStyle = f.sw; c.lineWidth = 6;
+    c.beginPath(); c.moveTo(sg[0][0], sg[0][1]); c.lineTo(sg[1][0], sg[1][1]); c.stroke();
+    c.shadowBlur = 0; c.strokeStyle = '#ffffff'; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(sg[0][0], sg[0][1]); c.lineTo(sg[1][0], sg[1][1]); c.stroke();
+  }
+  /* balls */
+  for (const f of A.f) {
+    c.fillStyle = f.inv > 0 ? '#ffffff' : f.col;
+    c.beginPath(); c.arc(f.x, f.y, AR, 0, 7); c.fill();
+    c.fillStyle = 'rgba(255,255,255,.45)';
+    c.beginPath(); c.arc(f.x - 5, f.y - 5, 4, 0, 7); c.fill();
+  }
+  for (const sk of A.sparks) {
+    c.globalAlpha = 1 - sk.t / 0.35; c.fillStyle = sk.col;
+    c.beginPath(); c.arc(sk.x, sk.y, 3, 0, 7); c.fill();
+  }
+  c.globalAlpha = 1;
+}
+
 let last = performance.now();
 function loop(now) {
   const dt = Math.min(0.033, (now - last) / 1000); last = now;
   step(dt / 2); step(dt / 2);
   draw();
+  aStep(dt); aDraw();
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
@@ -285,6 +538,12 @@ $('bLb2').onclick = () => show('lb');
 $('bMenu').onclick = () => show('menu');
 $('bBack').onclick = () => show('menu');
 $('go').onclick = launch;
+$('bArena').onclick = () => show('amode');
+$('bBot').onclick = () => { show('arena'); aStart('bot'); };
+$('bFriend').onclick = () => { show('arena'); aStart('friend'); };
+$('bAback').onclick = () => show('menu');
+$('aQuit').onclick = () => show('amode');
+$('aBtn').onclick = aNext;
 </script>
 </body>
 </html>
