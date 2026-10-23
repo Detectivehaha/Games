@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
@@ -39,34 +39,34 @@ li.me{outline:2px solid #ffd166}
 
 <section id="menu" class="screen on">
   <h1>Plinko</h1>
-  <p class="sub">10 шариков. Лови момент и бросай.</p>
-  <button id="bPlay">Играть</button>
-  <button id="bLb" class="alt">Таблица лидеров</button>
+  <p class="sub">10 balls. Pick your moment and drop.</p>
+  <button id="bPlay">Play</button>
+  <button id="bLb" class="alt">Leaderboard</button>
 </section>
 
 <section id="game" class="screen">
   <div class="top">
-    <div><span>Счёт</span><br><b id="score">0</b></div>
-    <div style="text-align:right"><span>Шариков</span><br><b id="left">10</b></div>
+    <div><span>Score</span><br><b id="score">0</b></div>
+    <div style="text-align:right"><span>Balls</span><br><b id="left">10</b></div>
   </div>
   <div id="wrap"><canvas id="c"></canvas></div>
-  <button id="go">Бросить</button>
+  <button id="go">Drop</button>
 </section>
 
 <section id="over" class="screen">
-  <h2>Игра окончена</h2>
+  <h2>Game over</h2>
   <div class="big" id="final">0</div>
   <p class="sub" id="rank"></p>
-  <button id="bAgain">Играть снова</button>
-  <button id="bLb2" class="alt">Таблица лидеров</button>
-  <button id="bMenu" class="alt">В меню</button>
+  <button id="bAgain">Play again</button>
+  <button id="bLb2" class="alt">Leaderboard</button>
+  <button id="bMenu" class="alt">Menu</button>
 </section>
 
 <section id="lb" class="screen">
-  <h2>Таблица лидеров</h2>
-  <p class="sub">Лучшие результаты на этом устройстве</p>
+  <h2>Leaderboard</h2>
+  <p class="sub">Best score per player</p>
   <ol id="list"></ol>
-  <button id="bBack" class="alt">Назад</button>
+  <button id="bBack" class="alt">Back</button>
 </section>
 
 <script>
@@ -74,15 +74,15 @@ const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor('#15132e'); tg.setBackgroundColor('#15132e'); } catch (e) {} }
 const $ = id => document.getElementById(id);
 
-const W = 360, H = 560, R = 7, PR = 4, SLOT = 40, FLOOR = 470, TOTAL = 10;
-const MULT = [10, 3, 1.5, 0.5, 0.2, 0.5, 1.5, 3, 10];
+const W = 360, H = 560, R = 7, PR = 4, SLOT = W / 11, FLOOR = 470, TOTAL = 10;
+const MULT = [1, 0.5, 3, 0.5, 0.2, 10, 0.2, 0.5, 3, 0.5, 1];
 const cv = $('c'), ctx = cv.getContext('2d'), wrap = $('wrap');
 let scale = 1, dpr = window.devicePixelRatio || 1;
 
 const pegs = [];
 for (let r = 0; r < 9; r++) {
-  const odd = r % 2, n = odd ? 8 : 9;
-  for (let k = 0; k < n; k++) pegs.push({ x: (odd ? 40 : 20) + k * 40, y: 90 + r * 38 });
+  const odd = r % 2, n = odd ? 10 : 11;
+  for (let k = odd ? 0 : 1; k < (odd ? n : n - 1); k++) pegs.push({ x: (odd ? SLOT : SLOT / 2) + k * SLOT, y: 90 + r * 38 });
 }
 
 let balls = [], popups = [], score = 0, left = TOTAL, playing = false;
@@ -107,16 +107,26 @@ function resize() {
 window.addEventListener('resize', resize);
 
 /* таблица лидеров (хранится на устройстве) */
-function loadLb() { try { return JSON.parse(localStorage.getItem('plinko_lb')) || []; } catch (e) { return []; } }
+function loadLb() {
+  let a = [];
+  try { a = JSON.parse(localStorage.getItem('plinko_lb')) || []; } catch (e) {}
+  const best = {};
+  a.forEach(e => { const k = e.id || e.n; if (!best[k] || e.s > best[k].s) best[k] = e; });
+  return Object.values(best).sort((x, y) => y.s - x.s);
+}
+function playerId() {
+  try { const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user; if (u && u.id) return 'tg' + u.id; } catch (e) {}
+  return 'local';
+}
 function saveLb(a) { try { localStorage.setItem('plinko_lb', JSON.stringify(a)); } catch (e) {} }
 function playerName() {
   try { const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user; if (u && u.first_name) return u.first_name; } catch (e) {}
-  return 'Игрок';
+  return 'Player';
 }
 function renderLb() {
   const a = loadLb(), ul = $('list');
   ul.innerHTML = '';
-  if (!a.length) { ul.innerHTML = '<p class="sub">Пока пусто. Сыграйте первую игру!</p>'; return; }
+  if (!a.length) { ul.innerHTML = '<p class="sub">Nothing here yet. Play your first game!</p>'; return; }
   a.forEach((e, i) => {
     const li = document.createElement('li');
     if (e === lastEntry || (lastEntry && e.t === lastEntry.t)) li.className = 'me';
@@ -143,15 +153,22 @@ function launch() {
 }
 function finish() {
   playing = false;
-  const entry = { n: playerName(), s: score, t: Date.now() };
-  const a = loadLb(); a.push(entry);
+  const id = playerId(), name = playerName(), a = loadLb();
+  let e = a.find(x => x.id === id || (!x.id && (x.n === name || x.n === 'Игрок'))), improved = false;
+  if (!e) { e = { id, n: name, s: score, t: Date.now() }; a.push(e); improved = true; }
+  else {
+    e.id = id; e.n = name;
+    if (score > e.s) { e.s = score; e.t = Date.now(); improved = true; }
+  }
   a.sort((x, y) => y.s - x.s);
   const top = a.slice(0, 10);
   saveLb(top);
-  lastEntry = entry;
-  const rank = top.findIndex(e => e.t === entry.t) + 1;
+  lastEntry = e;
+  const rank = top.indexOf(e) + 1;
   $('final').textContent = score;
-  $('rank').textContent = rank ? 'Место в таблице: ' + rank : 'В топ-10 не попали, попробуйте ещё';
+  $('rank').textContent = improved
+    ? 'New record! ' + (rank ? 'Rank: ' + rank : '')
+    : 'Your best: ' + e.s + '. Try to beat it!';
   setTimeout(() => show('over'), 500);
 }
 function land(b) {
@@ -177,7 +194,7 @@ function step(dt) {
       b.t += dt;
       const cx = b.slot * SLOT + SLOT / 2;
       b.x += (cx - b.x) * Math.min(1, dt * 12);
-      b.y += (505 - b.y) * Math.min(1, dt * 10);
+      b.y += (522 - b.y) * Math.min(1, dt * 10);
       if (b.t > 0.4 && !b.done) { b.done = true; land(b); }
       continue;
     }
@@ -198,9 +215,11 @@ function step(dt) {
     }
     if (b.x < R) { b.x = R; b.vx = Math.abs(b.vx) * .5; }
     if (b.x > W - R) { b.x = W - R; b.vx = -Math.abs(b.vx) * .5; }
+    b.still = Math.hypot(b.vx, b.vy) < 25 ? (b.still || 0) + dt : 0;
+    if (b.still > 0.35) { b.vx = (Math.random() - .5) * 140; b.vy = -40; b.still = 0; }
     if (b.y > FLOOR) {
       b.landed = true; b.t = 0;
-      b.slot = Math.max(0, Math.min(8, Math.floor(b.x / SLOT)));
+      b.slot = Math.max(0, Math.min(10, Math.floor(b.x / SLOT)));
     }
   }
   balls = balls.filter(b => !(b.done && b.t > 0.45));
@@ -209,22 +228,22 @@ function step(dt) {
   if (playing && left === 0 && balls.length === 0 && popups.length === 0) finish();
 }
 
-function slotColor(m) { return m >= 10 ? '#ff6b9d' : m >= 3 ? '#ffd166' : m >= 1.5 ? '#7be0c3' : '#6c63b5'; }
+function slotColor(m) { return m >= 10 ? '#ff6b9d' : m >= 3 ? '#ffd166' : m >= 1 ? '#7be0c3' : '#6c63b5'; }
 
 function draw() {
   if (!$('game').classList.contains('on')) return;
   ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
   ctx.clearRect(0, 0, W, H);
   ctx.textAlign = 'center';
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 11; i++) {
     ctx.globalAlpha = .22; ctx.fillStyle = slotColor(MULT[i]);
     ctx.fillRect(i * SLOT + 1, FLOOR, SLOT - 2, 70);
     ctx.globalAlpha = 1; ctx.fillStyle = slotColor(MULT[i]);
-    ctx.font = '700 13px system-ui,sans-serif';
-    ctx.fillText('×' + MULT[i], i * SLOT + SLOT / 2, 548);
+    ctx.font = '700 12px system-ui,sans-serif';
+    ctx.fillText('×' + MULT[i], i * SLOT + SLOT / 2, 494);
   }
   ctx.strokeStyle = '#8f89b8'; ctx.lineWidth = 2;
-  for (let i = 0; i <= 9; i++) { ctx.beginPath(); ctx.moveTo(i * SLOT, FLOOR + 6); ctx.lineTo(i * SLOT, 560); ctx.stroke(); }
+  for (let i = 0; i <= 11; i++) { ctx.beginPath(); ctx.moveTo(i * SLOT, FLOOR + 6); ctx.lineTo(i * SLOT, 560); ctx.stroke(); }
   /* рельс и ездящий шарик */
   if (playing && left > 0) {
     ctx.strokeStyle = 'rgba(143,137,184,.35)'; ctx.lineWidth = 2;
