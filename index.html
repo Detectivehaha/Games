@@ -26,26 +26,138 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .top span{color:var(--dim);font-size:14px}
 #wrap{flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center}
 canvas{display:block}
-ol{list-style:none;width:100%;padding:0;flex:1;overflow:auto}
-li{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:8px}
-li .n{color:var(--dim);width:24px;font-variant-numeric:tabular-nums}
-li .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-li .sc{font-weight:800;font-variant-numeric:tabular-nums}
-li.me{outline:2px solid #ffd166}
+.bet{width:100%;display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,.22);border-radius:20px;padding:10px 10px 12px}
+.betrow{display:flex;align-items:center;gap:8px}
+.betrow .step{width:50px;height:50px;padding:0;border-radius:14px;font-size:28px;line-height:1;flex:none;background:var(--card);color:var(--ink)}
+.betval{flex:1;height:50px;border-radius:14px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:900;font-size:26px;font-variant-numeric:tabular-nums;box-shadow:inset 0 0 0 2px rgba(255,107,157,.35)}
+.betval .gem{width:24px;height:24px}
+.chips{display:flex;gap:6px}
+.chips button{flex:1;width:auto;padding:9px 0;font-size:14px;border-radius:999px;background:var(--card);color:var(--dim);border:2px solid transparent}
+.chips button.on{background:var(--btn);color:#1b0f1f}
+.bet input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;margin:0;background:transparent;touch-action:pan-y}
+.bet input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--btn) var(--p,0%),#3a3670 var(--p,0%))}
+.bet input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-9px;border-radius:50%;background:#fff;border:4px solid var(--btn);box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.bet input[type=range]::-moz-range-track{height:10px;border-radius:5px;background:#3a3670}
+.bet input[type=range]::-moz-range-progress{height:10px;border-radius:5px;background:var(--btn)}
+.bet input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:4px solid var(--btn)}
+.bet input[type=range]:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:8px}
+#gRow{display:flex;gap:10px;width:100%}
+#gRow #go{flex:1;width:auto}
+#gRow #gMenu{flex:0 0 auto;width:auto;padding:16px 20px}
+#cr,#bj,#arena{overflow-y:auto}
+#cr{justify-content:flex-start}
+#cr>:first-child{margin-top:auto}
+#cr>:last-child{margin-bottom:auto}
+#cr>*,#bj>.row,#bj>.bet,#arena>button{flex:none}
+.net.pos{color:#8dff9e}.net.neg{color:#ff9aa5}
 .big{font-size:64px;font-weight:800;color:#ffd166}
 button.card{position:relative;overflow:hidden;height:150px;padding:0;border-radius:24px;text-align:left;color:#fff;background:#222;box-shadow:0 6px 18px rgba(0,0,0,.35)}
 button.card svg{position:absolute;inset:0;width:100%;height:100%}
 button.card .t{position:absolute;left:18px;bottom:12px;font-size:32px;font-weight:900;font-style:italic;letter-spacing:.5px;text-shadow:0 3px 0 rgba(0,0,0,.35)}
+#menu{overflow-y:auto;justify-content:flex-start;padding-top:2vh}
+button.card{height:124px}
+.felt{width:100%;flex:1;min-height:0;border-radius:24px;background:radial-gradient(circle at 50% 40%,#1f9a55,#0b5d36);padding:12px 8px;display:flex;flex-direction:column;justify-content:space-around;align-items:center;box-shadow:inset 0 0 0 3px rgba(255,255,255,.12)}
+.lab{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.pill{background:rgba(0,0,0,.35);border-radius:999px;padding:2px 12px;min-width:34px;text-align:center;font-variant-numeric:tabular-nums}
+.pill:empty{display:none}
+.hand{display:flex;justify-content:center;min-height:92px}
+.pc{width:62px;height:88px;border-radius:10px;background:#fff;color:#15132e;position:relative;box-shadow:0 4px 10px rgba(0,0,0,.35);flex:none;padding:6px 7px;font-weight:800}
+.pc + .pc{margin-left:var(--ov,-18px)}
+.pc b{display:block;font-size:20px;line-height:1}
+.pc i{display:block;font-style:normal;font-size:18px;line-height:1.1}
+.pc u{position:absolute;right:7px;bottom:5px;font-size:30px;text-decoration:none}
+.pc.red{color:#e11d48}
+.pc.back{background:repeating-linear-gradient(45deg,#4b3fb5 0 6px,#6c63e0 6px 12px);border:3px solid #fff}
+.pc.deal{animation:dealIn .28s ease-out}
+@keyframes dealIn{from{transform:translateY(-30px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+.bjmsg{min-height:28px;font-weight:900;font-size:22px;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+.bjmsg.win{color:#ffe27a}.bjmsg.lose{color:#ff9aa5}.bjmsg.push{color:#d6d1ff}
+.row{display:flex;gap:10px;width:100%}
+.row button{width:auto;flex:1}
+button.card{height:112px}
+.trackbox{width:100%;display:flex;flex-direction:column;border-radius:20px;overflow:hidden;border:6px solid #3fa24f;background:#3fa24f;box-shadow:0 8px 22px rgba(0,0,0,.4)}
+.lane{position:relative;height:68px;background:#d9a066;border-bottom:2px dashed rgba(255,255,255,.4)}
+.lane:nth-child(even){background:#cf9558}
+.lane:last-child{border-bottom:0}
+.lane::before{content:"";position:absolute;left:46px;top:0;bottom:0;border-left:3px dashed rgba(255,255,255,.55)}
+.lane::after{content:"";position:absolute;right:0;top:0;bottom:0;width:16px;background:repeating-conic-gradient(#fff 0 25%,#15132e 0 50%) 0 0/16px 16px}
+.lane.mine{box-shadow:inset 0 0 0 3px #ffd166}
+.ln{position:absolute;left:8px;top:50%;margin-top:-11px;width:22px;height:22px;border-radius:50%;background:var(--c);color:#15132e;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
+.runner{position:absolute;left:0;top:6px;width:56px;height:56px;will-change:transform}
+.bd{position:relative;width:56px;height:56px}
+.hen{width:56px;height:56px;display:block}
+.bib{position:absolute;left:17px;top:26px;width:17px;height:17px;border-radius:50%;background:var(--c);color:#15132e;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.crown{position:absolute;left:29px;top:-7px;width:24px;height:16px;opacity:0;transform:translateY(8px) scale(.5);transition:opacity .2s,transform .25s;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.runner.lead .crown{opacity:1;transform:none}
+.runner.run .bd{animation:hop .26s infinite ease-in-out}
+@keyframes hop{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+.pl{position:absolute;right:24px;top:50%;margin-top:-11px;padding:2px 9px;border-radius:999px;background:rgba(0,0,0,.5);color:#fff;font-weight:800;font-size:12px}
+.pl:empty{display:none}
+.pl.p1{background:#ffd166;color:#15132e}
+.picks{display:flex;gap:8px;width:100%}
+.pick{width:auto;flex:1;padding:8px 2px;background:var(--card);color:var(--ink);border:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;border-radius:14px}
+.pick .hen{width:40px;height:40px}
+.pick b{color:var(--c)}
+.pick.sel{border-color:var(--c);background:#2d2a5a}
+.pick:disabled{opacity:.55}
+.cf{position:fixed;top:-14px;width:8px;height:12px;border-radius:2px;animation:fall 1.8s ease-in forwards;pointer-events:none;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+#gemBar{align-self:flex-end;display:flex;align-items:center;gap:8px;margin-bottom:10px;position:relative;z-index:3}
+.gempill{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.35);border:2px solid rgba(94,224,107,.55);border-radius:999px;padding:3px 14px 3px 8px;font-weight:900;font-size:18px;font-variant-numeric:tabular-nums}
+.gem{width:24px;height:24px;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.gem.big{width:88px;height:88px}
+.gempill.pop{animation:gpop .4s}
+@keyframes gpop{40%{transform:scale(1.2)}}
+.plus{width:32px;height:32px;padding:0;border-radius:50%;background:#3ddc6b;color:#0b2d16;font-size:24px;line-height:1;font-weight:900}
+.fl{position:absolute;right:46px;top:2px;font-weight:900;color:#8dff9e;animation:flt 1s ease-out forwards;pointer-events:none}
+@keyframes flt{to{transform:translateY(-22px);opacity:0}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}
+.modal.on{display:flex}
+.sheet{background:#221f47;border-radius:24px;padding:24px 20px;width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
 </style>
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="gem" viewBox="0 0 24 24">
+    <polygon points="12,1 21,7 19,17 12,23 5,17 3,7" fill="#1b9e43" stroke="#0b5d36" stroke-width="1.2" stroke-linejoin="round"/>
+    <polygon points="12,1 21,7 12,10 3,7" fill="#9dffae"/>
+    <polygon points="3,7 12,10 12,23 5,17" fill="#3ddc6b"/>
+    <polygon points="12,10 21,7 19,17 12,23" fill="#1b9e43"/>
+    <polygon points="6,6 10,3.6 9,6.4" fill="#ffffff" opacity=".85"/>
+  </symbol>
+  <symbol id="hen" viewBox="0 0 64 64">
+    <path d="M12 30c-7-1-9-10-5-15 1 6 5 9 10 10z" fill="#f4f1fb" stroke="#d9d3ea" stroke-width="1.2"/>
+    <ellipse cx="30" cy="38" rx="20" ry="16" fill="#fff" stroke="#d9d3ea" stroke-width="1.2"/>
+    <circle cx="46" cy="22" r="11" fill="#fff" stroke="#d9d3ea" stroke-width="1.2"/>
+    <path d="M40 13c0-5 4-6 5-3 1-3 5-2 4 3z" fill="#e53935"/>
+    <path d="M56 20l8 3-8 4z" fill="#ffb300"/>
+    <path d="M52 28c3 4 0 8-3 7-1-3 0-6 3-7z" fill="#e53935"/>
+    <circle cx="49" cy="20" r="2.2" fill="#15132e"/>
+    <path d="M18 38c8-7 19-5 22 3-6 9-19 9-22-3z" fill="#ece8f7" stroke="#d9d3ea" stroke-width="1"/>
+    <path d="M26 53v8M36 53v8M21 61h9M31 61h9" stroke="#ffb300" stroke-width="3" stroke-linecap="round" fill="none"/>
+  </symbol>
+</svg>
+
+<div id="gemBar">
+  <div class="gempill" id="gemPill"><svg class="gem" viewBox="0 0 24 24" aria-hidden="true"><use href="#gem"/></svg><b id="gemN">0</b></div>
+  <button id="gemPlus" class="plus" aria-label="Get gems">+</button>
+</div>
+
+<div id="gemModal" class="modal">
+  <div class="sheet">
+    <svg class="gem big" viewBox="0 0 24 24" aria-hidden="true"><use href="#gem"/></svg>
+    <h2>+100 Gems</h2>
+    <p class="sub">Free gems, tap Claim to add them to your balance.</p>
+    <button id="gemClaim">Claim</button>
+    <button id="gemClose" class="alt">Close</button>
+  </div>
+</div>
+
 <section id="menu" class="screen on">
   <h1>Mini Games</h1>
-  <button id="bPlay" class="card" aria-label="Plinko">
-    <svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3ddc6b"/><stop offset="1" stop-color="#0b5d36"/></linearGradient></defs>
-      <rect width="340" height="150" fill="url(#gp)"/>
+  <button id="bPlay" class="card" aria-label="Plinko" style="background:linear-gradient(135deg,#3ddc6b,#0b5d36)">
+    <svg viewBox="0 0 340 150" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
       <g fill="#eafff0" opacity=".92">
         <circle cx="250" cy="30" r="3.5"/>
         <circle cx="238" cy="48" r="3.5"/><circle cx="262" cy="48" r="3.5"/>
@@ -62,10 +174,8 @@ button.card .t{position:absolute;left:18px;bottom:12px;font-size:32px;font-weigh
     </svg>
     <span class="t">PLINKO</span>
   </button>
-  <button id="bArena" class="card" aria-label="Arena">
-    <svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><linearGradient id="ga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6a4d"/><stop offset="1" stop-color="#7d1456"/></linearGradient></defs>
-      <rect width="340" height="150" fill="url(#ga)"/>
+  <button id="bArena" class="card" aria-label="Arena" style="background:linear-gradient(135deg,#ff6a4d,#7d1456)">
+    <svg viewBox="0 0 340 150" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
       <g stroke="#fff" opacity=".1" stroke-width="1">
         <path d="M0 30H340M0 60H340M0 90H340M0 120H340M60 0V150M120 0V150M180 0V150M240 0V150M300 0V150"/>
       </g>
@@ -83,7 +193,59 @@ button.card .t{position:absolute;left:18px;bottom:12px;font-size:32px;font-weigh
     </svg>
     <span class="t">ARENA</span>
   </button>
-  <button id="bLb" class="alt">Leaderboard</button>
+  <button id="bBj" class="card" aria-label="Blackjack" style="background:linear-gradient(135deg,#4f5bff,#1b1470)">
+    <svg viewBox="0 0 340 150" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
+      <g transform="translate(232 80) rotate(-14)">
+        <rect x="-34" y="-50" width="68" height="100" rx="10" fill="#fff"/>
+        <text x="-25" y="-26" font-family="system-ui,sans-serif" font-size="22" font-weight="800" fill="#15132e">A</text>
+        <text x="-26" y="-4" font-family="system-ui,sans-serif" font-size="22" fill="#15132e">&#9824;</text>
+      </g>
+      <g transform="translate(284 74) rotate(12)">
+        <rect x="-34" y="-50" width="68" height="100" rx="10" fill="#fff"/>
+        <text x="-25" y="-26" font-family="system-ui,sans-serif" font-size="22" font-weight="800" fill="#e11d48">K</text>
+        <text x="-26" y="-4" font-family="system-ui,sans-serif" font-size="22" fill="#e11d48">&#9829;</text>
+      </g>
+      <circle cx="210" cy="124" r="15" fill="#ffd166"/><circle cx="210" cy="124" r="9" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 3"/>
+      <circle cx="318" cy="120" r="12" fill="#ff6b9d"/><circle cx="318" cy="120" r="7" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="3 3"/>
+    </svg>
+    <span class="t" style="font-size:26px">BLACKJACK</span>
+  </button>
+  <button id="bCr" class="card" aria-label="Chicken Race" style="background:linear-gradient(135deg,#ffb84d,#e8590c)">
+    <svg viewBox="0 0 340 150" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
+      <defs><pattern id="chk" width="18" height="18" patternUnits="userSpaceOnUse"><rect width="18" height="18" fill="#fff"/><rect width="9" height="9" fill="#15132e"/><rect x="9" y="9" width="9" height="9" fill="#15132e"/></pattern></defs>
+      <rect x="322" y="8" width="18" height="134" fill="url(#chk)"/>
+      <g stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"><path d="M150 38H180M160 46H186M126 76H160M136 84H166M214 104H246M224 112H250"/></g>
+      <use href="#hen" x="226" y="8" width="58" height="58"/>
+      <use href="#hen" x="176" y="46" width="58" height="58"/>
+      <use href="#hen" x="252" y="86" width="58" height="58"/>
+      <circle cx="255" cy="42" r="6" fill="#ff4d6d"/><circle cx="205" cy="80" r="6" fill="#4da3ff"/><circle cx="281" cy="120" r="6" fill="#ffd166"/>
+    </svg>
+    <span class="t" style="font-size:24px">CHICKEN RACE</span>
+  </button>
+</section>
+
+<section id="cr" class="screen">
+  <div class="top" style="justify-content:center"><span id="crTally"></span></div>
+  <div class="trackbox" id="crTrack"></div>
+  <div class="bjmsg" id="crMsg">Pick your chicken &middot; win pays x3</div>
+  <div class="sub" id="crOrder" style="min-height:20px"></div>
+  <div class="picks" id="crPicks"></div>
+  <div id="crBet"></div>
+  <div class="row"><button id="crGo">Start race</button><button id="crMenu" class="alt">Menu</button></div>
+</section>
+
+<section id="bj" class="screen">
+  <div class="top" style="justify-content:center"><span id="bjTally"></span></div>
+  <div class="felt">
+    <div class="lab">Dealer <span class="pill" id="bjDs"></span></div>
+    <div class="hand" id="bjD"></div>
+    <div class="bjmsg" id="bjMsg">Press Deal to start</div>
+    <div class="hand" id="bjP"></div>
+    <div class="lab">You <span class="pill" id="bjPs"></span></div>
+  </div>
+  <div id="bjBet"></div>
+  <div class="row"><button id="bjHit">Hit</button><button id="bjStand" class="alt">Stand</button></div>
+  <div class="row"><button id="bjDeal">Deal</button><button id="bjMenu" class="alt">Menu</button></div>
 </section>
 
 <section id="amode" class="screen" style="justify-content:center">
@@ -97,33 +259,27 @@ button.card .t{position:absolute;left:18px;bottom:12px;font-size:32px;font-weigh
 <section id="arena" class="screen">
   <p class="sub" id="aTitle" style="font-size:16px;color:var(--ink)"></p>
   <div id="awrap" style="flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center"><canvas id="ac" style="touch-action:none"></canvas></div>
+  <div id="aBet"></div>
   <button id="aBtn">Fight!</button>
   <button id="aQuit" class="alt">Back</button>
 </section>
 
 <section id="game" class="screen">
   <div class="top">
-    <div><span>Score</span><br><b id="score">0</b></div>
-    <div style="text-align:right"><span>Balls</span><br><b id="left">10</b></div>
+    <div><span>Won</span><br><b id="score" class="net" style="font-size:26px">0</b></div>
+    <div style="text-align:right"><span>Balls</span><br><b id="left" style="font-size:26px">10</b></div>
   </div>
   <div id="wrap"><canvas id="c"></canvas></div>
-  <button id="go">Drop</button>
+  <div id="pBet"></div>
+  <div id="gRow"><button id="go">Drop</button><button id="gMenu" class="alt">Menu</button></div>
 </section>
 
 <section id="over" class="screen">
-  <h2>Game over</h2>
-  <div class="big" id="final">0</div>
+  <h2>Round over</h2>
+  <div class="big net" id="final">0</div>
   <p class="sub" id="rank"></p>
   <button id="bAgain">Play again</button>
-  <button id="bLb2" class="alt">Leaderboard</button>
   <button id="bMenu" class="alt">Menu</button>
-</section>
-
-<section id="lb" class="screen">
-  <h2>Leaderboard</h2>
-  <p class="sub">Best score per player</p>
-  <ol id="list"></ol>
-  <button id="bBack" class="alt">Back</button>
 </section>
 
 <script>
@@ -143,14 +299,16 @@ for (let r = 0; r < 9; r++) {
 }
 
 let balls = [], popups = [], score = 0, left = TOTAL, playing = false;
-let dx = W / 2, dir = 1, lastEntry = null;
+let dx = W / 2, dir = 1, spent = 0, won = 0;
+const BET_MIN = 10, BET_MAX = 10000;
+let betP;
 
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
   $(id).classList.add('on');
   if (id === 'game') resize();
-  if (id === 'lb') renderLb();
   if (id === 'arena') aResize();
+  $('gemPlus').style.display = id === 'menu' ? '' : 'none';
 }
 
 function resize() {
@@ -164,78 +322,47 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
-/* таблица лидеров (хранится на устройстве) */
-function loadLb() {
-  let a = [];
-  try { a = JSON.parse(localStorage.getItem('plinko_lb')) || []; } catch (e) {}
-  const best = {};
-  a.forEach(e => { const k = e.id || e.n; if (!best[k] || e.s > best[k].s) best[k] = e; });
-  return Object.values(best).sort((x, y) => y.s - x.s);
-}
-function playerId() {
-  try { const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user; if (u && u.id) return 'tg' + u.id; } catch (e) {}
-  return 'local';
-}
-function saveLb(a) { try { localStorage.setItem('plinko_lb', JSON.stringify(a)); } catch (e) {} }
-function playerName() {
-  try { const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user; if (u && u.first_name) return u.first_name; } catch (e) {}
-  return 'Player';
-}
-function renderLb() {
-  const a = loadLb(), ul = $('list');
-  ul.innerHTML = '';
-  if (!a.length) { ul.innerHTML = '<p class="sub">Nothing here yet. Play your first game!</p>'; return; }
-  a.forEach((e, i) => {
-    const li = document.createElement('li');
-    if (e === lastEntry || (lastEntry && e.t === lastEntry.t)) li.className = 'me';
-    li.innerHTML = '<span class="n">' + (i + 1) + '</span><span class="nm"></span><span class="sc">' + e.s + '</span>';
-    li.querySelector('.nm').textContent = e.n;
-    ul.appendChild(li);
-  });
-}
-
 /* игра */
 function startGame() {
-  score = 0; left = TOTAL; balls = []; popups = []; playing = true; dx = W / 2; dir = 1;
-  hud(); show('game');
+  score = 0; left = TOTAL; balls = []; popups = []; playing = true; dx = W / 2; dir = 1; spent = 0; won = 0;
+  show('game'); hud();
 }
+function fmtNet(n) { return (n > 0 ? '+' : '') + n.toLocaleString('en-US'); }
 function hud() {
-  $('score').textContent = score;
+  const sc = $('score');
+  sc.textContent = score.toLocaleString('en-US');
+  sc.className = 'net' + (score > 0 ? ' pos' : '');
   $('left').textContent = left;
-  $('go').disabled = left <= 0;
+  const go = $('go');
+  if (left <= 0) { go.disabled = true; go.textContent = 'Drop'; }
+  else if (gems < betP.get()) { go.disabled = true; go.textContent = 'Not enough gems'; }
+  else { go.disabled = false; go.textContent = 'Drop \u00b7 ' + betP.get().toLocaleString('en-US'); }
 }
 function launch() {
-  if (!playing || left <= 0) return;
+  const bet = betP.get();
+  if (!playing || left <= 0 || gems < bet) return;
+  gemAdd(-bet);
+  spent += bet;
   left--; hud();
-  balls.push({ x: dx, y: 22, vx: (Math.random() - .5) * 20, vy: 0, landed: false, t: 0, slot: 0 });
+  balls.push({ x: dx, y: 22, vx: (Math.random() - .5) * 20, vy: 0, landed: false, t: 0, slot: 0, bet });
 }
 function finish() {
   playing = false;
-  const id = playerId(), name = playerName(), a = loadLb();
-  let e = a.find(x => x.id === id || (!x.id && (x.n === name || x.n === 'Игрок'))), improved = false;
-  if (!e) { e = { id, n: name, s: score, t: Date.now() }; a.push(e); improved = true; }
-  else {
-    e.id = id; e.n = name;
-    if (score > e.s) { e.s = score; e.t = Date.now(); improved = true; }
-  }
-  a.sort((x, y) => y.s - x.s);
-  const top = a.slice(0, 10);
-  saveLb(top);
-  lastEntry = e;
-  const rank = top.indexOf(e) + 1;
-  $('final').textContent = score;
-  $('rank').textContent = improved
-    ? 'New record! ' + (rank ? 'Rank: ' + rank : '')
-    : 'Your best: ' + e.s + '. Try to beat it!';
+  const net = won - spent;
+  $('final').textContent = fmtNet(net);
+  $('final').className = 'big net' + (net > 0 ? ' pos' : net < 0 ? ' neg' : '');
+  $('rank').textContent = 'Spent ' + spent.toLocaleString('en-US') + ' \u00b7 Won ' + won.toLocaleString('en-US');
   setTimeout(() => show('over'), 500);
 }
 function land(b) {
-  const pts = Math.round(MULT[b.slot] * 10);
-  score += pts; hud();
-  popups.push({ x: b.slot * SLOT + SLOT / 2, y: 455, t: 0, text: '+' + pts, big: MULT[b.slot] >= 3 });
+  const m = MULT[b.slot];
+  const pay = Math.round(b.bet * m);
+  if (pay > 0) gemAdd(pay);
+  won += pay; score += pay; hud();
+  popups.push({ x: b.slot * SLOT + SLOT / 2, y: 455, t: 0, text: '+' + pay, big: m >= 3 });
   try {
     if (tg && tg.HapticFeedback) {
-      if (MULT[b.slot] >= 3) tg.HapticFeedback.notificationOccurred('success');
+      if (m >= 3) tg.HapticFeedback.notificationOccurred('success');
       else tg.HapticFeedback.impactOccurred('light');
     }
   } catch (e) {}
@@ -283,7 +410,7 @@ function step(dt) {
   balls = balls.filter(b => !(b.done && b.t > 0.45));
   for (const p of popups) p.t += dt;
   popups = popups.filter(p => p.t < 0.9);
-  if (playing && left === 0 && balls.length === 0 && popups.length === 0) finish();
+  if (playing && balls.length === 0 && popups.length === 0 && spent > 0 && (left === 0 || gems < BET_MIN)) finish();
 }
 
 function slotColor(m) { return m >= 10 ? '#ff6b9d' : m >= 3 ? '#ffd166' : m >= 1 ? '#7be0c3' : '#6c63b5'; }
@@ -353,8 +480,9 @@ function aStart(mode) {
 function aText() {
   const t = $('aTitle'), b = $('aBtn');
   b.style.display = '';
+  $('aBet').style.display = (aMode === 'bot' && (A.ph === 'aim' || A.ph === 'over')) ? '' : 'none';
   if (A.ph === 'aim') {
-    if (aMode === 'bot') { t.textContent = 'Tap the arena to aim your pink ball'; b.textContent = 'Fight!'; }
+    if (aMode === 'bot') { t.textContent = 'Tap the arena to aim \u00b7 win pays x1.5'; b.textContent = 'Fight!'; }
     else if (A.who === 0) { t.textContent = 'Player 1: tap to aim the pink ball'; b.textContent = 'Lock in'; }
     else { t.textContent = 'Player 2: tap to aim the green ball'; b.textContent = 'Fight!'; }
   } else if (A.ph === 'fight') { t.textContent = 'Fight!'; b.style.display = 'none'; }
@@ -369,7 +497,12 @@ function aNext() {
   if (A.ph === 'over') { aStart(aMode); return; }
   if (A.ph !== 'aim') return;
   if (aMode === 'friend' && A.who === 0) { A.who = 1; aText(); return; }
-  if (aMode === 'bot') A.f[1].aim = Math.random() * Math.PI * 2;
+  if (aMode === 'bot') {
+    const bt = betA.get();
+    if (gems < bt) { $('aTitle').textContent = 'Not enough gems'; return; }
+    gemAdd(-bt); A.bet = bt;
+    A.f[1].aim = Math.random() * Math.PI * 2;
+  }
   aFight();
 }
 function aAim(e) {
@@ -443,6 +576,10 @@ function aStep(dt) {
     A.ph = 'over';
     const w = p.hp === q.hp ? -1 : (p.hp > q.hp ? 0 : 1);
     A.msg = w < 0 ? 'Draw!' : aMode === 'bot' ? (w === 0 ? 'You win!' : 'Bot wins!') : 'Player ' + (w + 1) + ' wins!';
+    if (aMode === 'bot' && A.bet) {
+      if (w === 0) { const pay = Math.round(A.bet * 1.5); gemAdd(pay); A.msg += ' +' + pay; }
+      else if (w < 0) { gemAdd(A.bet); A.msg += ' Bet returned'; }
+    }
     aText(); aHaptic('end');
   }
 }
@@ -521,22 +658,349 @@ function aDraw() {
   c.globalAlpha = 1;
 }
 
+/* ===== BLACKJACK ===== */
+const SUITS = ['\u2660', '\u2665', '\u2666', '\u2663'], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+let deck = [], bjD = [], bjP = [], bjPh = 'idle', bjT = { w: 0, l: 0, p: 0 };
+try { const t = JSON.parse(localStorage.getItem('bj_tally')); if (t) bjT = t; } catch (e) {}
+
+function bjShuffle() {
+  deck = [];
+  for (const s of SUITS) for (const r of RANKS) deck.push({ r, s });
+  for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const x = deck[i]; deck[i] = deck[j]; deck[j] = x; }
+}
+function bjDraw() { if (deck.length < 1) bjShuffle(); return deck.pop(); }
+function bjVal(h) {
+  let t = 0, a = 0;
+  for (const c of h) {
+    if (c.r === 'A') { a++; t += 11; }
+    else if (c.r === '10' || c.r === 'J' || c.r === 'Q' || c.r === 'K') t += 10;
+    else t += +c.r;
+  }
+  while (t > 21 && a > 0) { t -= 10; a--; }
+  return t;
+}
+function bjRender(el, hand, hide) {
+  while (el.children.length > hand.length) el.removeChild(el.lastChild);
+  hand.forEach((c, i) => {
+    const want = (hide && i === 1) ? 'b' : 'f', key = want + c.r + c.s, old = el.children[i];
+    if (old && old.dataset.k === key) return;
+    const n = document.createElement('div');
+    n.dataset.k = key;
+    n.className = 'pc' + (want === 'b' ? ' back' : (c.s === '\u2665' || c.s === '\u2666' ? ' red' : '')) + ' deal';
+    if (want === 'f') n.innerHTML = '<b>' + c.r + '</b><i>' + c.s + '</i><u>' + c.s + '</u>';
+    if (old) el.replaceChild(n, old); else el.appendChild(n);
+  });
+  el.style.setProperty('--ov', hand.length > 5 ? '-38px' : '-18px');
+}
+function bjMsg(t, c) { const m = $('bjMsg'); m.textContent = t; m.className = 'bjmsg ' + (c || ''); }
+function bjView() {
+  const hide = bjPh === 'player';
+  bjRender($('bjD'), bjD, hide);
+  bjRender($('bjP'), bjP, false);
+  $('bjDs').textContent = bjD.length ? (hide ? bjVal([bjD[0]]) : bjVal(bjD)) : '';
+  $('bjPs').textContent = bjP.length ? bjVal(bjP) : '';
+  $('bjBet').style.display = (bjPh === 'player' || bjPh === 'dealer') ? 'none' : '';
+  $('bjHit').disabled = bjPh !== 'player';
+  $('bjStand').disabled = bjPh !== 'player';
+  $('bjDeal').disabled = bjPh === 'player' || bjPh === 'dealer';
+  $('bjTally').textContent = 'Wins ' + bjT.w + '  \u00b7  Losses ' + bjT.l + '  \u00b7  Push ' + bjT.p;
+}
+function bjFinish(res, msg) {
+  bjPh = 'done';
+  const won = res === 'win' || res === 'bj';
+  const pay = Math.round(bjBet * (res === 'bj' ? 2.5 : res === 'win' ? 2 : res === 'push' ? 1 : 0));
+  if (pay > 0) gemAdd(pay);
+  if (res === 'push') msg += ' (bet returned)'; else if (pay > 0) msg += ' +' + pay;
+  if (won) bjT.w++; else if (res === 'push') bjT.p++; else bjT.l++;
+  try { localStorage.setItem('bj_tally', JSON.stringify(bjT)); } catch (e) {}
+  bjMsg(msg, res === 'push' ? 'push' : won ? 'win' : 'lose');
+  bjView();
+  try { if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred(res === 'push' ? 'warning' : won ? 'success' : 'error'); } catch (e) {}
+}
+function bjDealNew() {
+  if (bjPh === 'player' || bjPh === 'dealer') return;
+  const bt = betB.get();
+  if (gems < bt) { bjMsg('Not enough gems', 'lose'); return; }
+  gemAdd(-bt); bjBet = bt;
+  if (deck.length < 15) bjShuffle();
+  bjD = []; bjP = [];
+  $('bjD').innerHTML = ''; $('bjP').innerHTML = '';
+  bjP.push(bjDraw()); bjD.push(bjDraw()); bjP.push(bjDraw()); bjD.push(bjDraw());
+  bjPh = 'player'; bjMsg('Your move', '');
+  const pn = bjVal(bjP) === 21, dn = bjVal(bjD) === 21;
+  if (pn && dn) { bjFinish('push', 'Double Blackjack: push'); return; }
+  if (pn) { bjFinish('bj', 'Blackjack! You win'); return; }
+  if (dn) { bjFinish('lose', 'Dealer has Blackjack'); return; }
+  bjView();
+}
+function bjHit() {
+  if (bjPh !== 'player') return;
+  bjP.push(bjDraw());
+  const v = bjVal(bjP);
+  if (v > 21) { bjFinish('bust', 'Bust! You lose'); }
+  else if (v === 21) { bjView(); bjStand(); }
+  else bjView();
+}
+function bjStand() {
+  if (bjPh !== 'player') return;
+  bjPh = 'dealer'; bjMsg('Dealer plays', ''); bjView();
+  const step = () => {
+    if (bjVal(bjD) < 17) { bjD.push(bjDraw()); bjView(); setTimeout(step, 650); return; }
+    const pv = bjVal(bjP), dv = bjVal(bjD);
+    if (dv > 21) bjFinish('win', 'Dealer busts. You win!');
+    else if (pv > dv) bjFinish('win', 'You win!');
+    else if (pv < dv) bjFinish('lose', 'Dealer wins');
+    else bjFinish('push', 'Push: a tie');
+  };
+  setTimeout(step, 700);
+}
+
+/* ===== CHICKEN RACE ===== */
+const CH = [{ n: 'Ruby', c: '#ff4d6d' }, { n: 'Sky', c: '#4da3ff' }, { n: 'Goldie', c: '#ffd166' }, { n: 'Minty', c: '#5ee06b' }];
+const ORD = ['1st', '2nd', '3rd', '4th'];
+let cr = { ph: 'idle', pick: -1, h: [], placed: 0, order: [], cd: 0, shown: 0 }, crBuilt = false;
+let crT = { w: 0, n: 0, s: 0, b: 0 };
+try { const t = JSON.parse(localStorage.getItem('cr_tally')); if (t) crT = t; } catch (e) {}
+
+function crMsg(t, c) { const m = $('crMsg'); m.textContent = t; m.className = 'bjmsg ' + (c || ''); }
+function crBuild() {
+  const tr = $('crTrack'), pk = $('crPicks');
+  tr.innerHTML = ''; pk.innerHTML = '';
+  CH.forEach((ch, i) => {
+    const lane = document.createElement('div');
+    lane.className = 'lane'; lane.style.setProperty('--c', ch.c);
+    lane.innerHTML = '<span class="ln">' + (i + 1) + '</span><div class="runner"><div class="bd"><svg class="hen" viewBox="0 0 64 64"><use href="#hen"/></svg><span class="bib">' + (i + 1) + '</span><svg class="crown" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 14L1 3l6 5 5-7 5 7 6-5-1 11z" fill="#ffd166" stroke="#e39b0b" stroke-width="1.2" stroke-linejoin="round"/><circle cx="12" cy="3" r="1.6" fill="#ff4d6d"/></svg></div></div><span class="pl"></span>';
+    tr.appendChild(lane);
+    const b = document.createElement('button');
+    b.className = 'pick'; b.style.setProperty('--c', ch.c);
+    b.innerHTML = '<svg class="hen" viewBox="0 0 64 64"><use href="#hen"/></svg><b>' + ch.n + '</b>';
+    b.onclick = () => crPick(i);
+    pk.appendChild(b);
+  });
+  crBuilt = true;
+}
+function crPlace() {
+  if (!crBuilt) return;
+  const lanes = $('crTrack').children;
+  for (let i = 0; i < 4; i++) {
+    const lane = lanes[i], w = lane.clientWidth || 340;
+    lane.children[1].style.transform = 'translateX(' + (4 + cr.h[i].p * (w - 16 - 56 - 4)) + 'px)';
+  }
+}
+function crCrown() {
+  if (!crBuilt) return;
+  let lead = -1;
+  if (cr.order.length) lead = cr.order[0];
+  else { let m = 0.02; cr.h.forEach((h, i) => { if (h.p > m) { m = h.p; lead = i; } }); }
+  const lanes = $('crTrack').children;
+  for (let i = 0; i < 4; i++) lanes[i].children[1].classList.toggle('lead', i === lead);
+  if (cr.ph === 'race' && cr.order.length === 0 && lead >= 0 && lead !== cr.lastLead) {
+    cr.lastLead = lead; crMsg('Leading: ' + CH[lead].n, '');
+  }
+}
+function crRunning(on) {
+  if (!crBuilt) return;
+  const lanes = $('crTrack').children;
+  for (let i = 0; i < 4; i++) {
+    const r = lanes[i].children[1];
+    r.style.animationDelay = '';
+    r.classList.toggle('run', on);
+    r.firstChild.style.animationDelay = (-Math.random() * 0.26) + 's';
+  }
+}
+function crView() {
+  const busy = cr.ph === 'count' || cr.ph === 'race';
+  $('crBet').style.display = busy ? 'none' : '';
+  $('crGo').disabled = cr.pick < 0 || busy;
+  $('crGo').textContent = cr.ph === 'done' ? 'Race again' : 'Start race';
+  if (crBuilt) {
+    const pk = $('crPicks').children, lanes = $('crTrack').children;
+    for (let i = 0; i < 4; i++) {
+      pk[i].classList.toggle('sel', i === cr.pick);
+      pk[i].disabled = busy;
+      lanes[i].classList.toggle('mine', i === cr.pick);
+    }
+  }
+  $('crTally').textContent = 'Wins ' + crT.w + '  \u00b7  Races ' + crT.n + '  \u00b7  Streak ' + crT.s + ' (best ' + crT.b + ')';
+}
+function crReset() {
+  cr.h = CH.map(() => ({ p: 0, v: 0.1, tv: 0.1, tt: 0, fin: false, place: 0 }));
+  cr.placed = 0; cr.order = []; cr.winner = -1;
+  $('crOrder').textContent = '';
+  if (crBuilt) { const lanes = $('crTrack').children; for (let i = 0; i < 4; i++) { lanes[i].children[2].textContent = ''; lanes[i].children[2].className = 'pl'; } }
+  cr.lastLead = -1;
+  crRunning(false); crPlace(); crCrown();
+}
+function crPick(i) {
+  if (cr.ph === 'count' || cr.ph === 'race') return;
+  cr.pick = i;
+  if (cr.ph === 'done') { cr.ph = 'idle'; crReset(); }
+  crMsg('You picked ' + CH[i].n + '. Ready?', '');
+  crView();
+}
+function crStart() {
+  if (cr.pick < 0 || cr.ph === 'count' || cr.ph === 'race') return;
+  const bt = betC.get();
+  if (gems < bt) { crMsg('Not enough gems', 'lose'); return; }
+  gemAdd(-bt); cr.bet = bt;
+  crReset();
+  cr.ph = 'count'; cr.cd = 3; cr.shown = 0;
+  crMsg('3', ''); cr.shown = 3;
+  crView();
+}
+/* one simulation step; returns indexes of chickens that crossed the line this step */
+function crSim(dt) {
+  for (const h of cr.h) {
+    if (h.fin) continue;
+    h.tt -= dt;
+    if (h.tt <= 0) {
+      h.tv = 0.105 * (0.7 + 0.6 * Math.random());
+      if (Math.random() < 0.1) h.tv *= 1.5;
+      h.tt = 0.3 + Math.random() * 0.5;
+    }
+    h.v += (h.tv - h.v) * Math.min(1, dt * 5);
+    h.p += h.v * dt;
+  }
+  const done = [];
+  cr.h.forEach((h, i) => { if (!h.fin && h.p >= 1) done.push(i); });
+  done.sort((a, b) => cr.h[b].p - cr.h[a].p);
+  for (const i of done) { cr.h[i].fin = true; cr.h[i].p = 1; cr.h[i].place = ++cr.placed; cr.order.push(i); }
+  return done;
+}
+function crConfetti() {
+  const cols = ['#ff4d6d', '#4da3ff', '#ffd166', '#5ee06b', '#ffffff'];
+  for (let i = 0; i < 30; i++) {
+    const d = document.createElement('div');
+    d.className = 'cf';
+    d.style.left = Math.random() * 100 + 'vw';
+    d.style.background = cols[i % cols.length];
+    d.style.animationDelay = Math.random() * 0.4 + 's';
+    document.body.appendChild(d);
+    setTimeout(() => { if (d.parentNode) d.parentNode.removeChild(d); }, 2600);
+  }
+}
+function crWin(i) {
+  const hit = cr.pick === i;
+  crT.n++;
+  if (hit) { crT.w++; crT.s++; crT.b = Math.max(crT.b, crT.s); } else crT.s = 0;
+  try { localStorage.setItem('cr_tally', JSON.stringify(crT)); } catch (e) {}
+  let pay = 0;
+  if (hit) { pay = (cr.bet || 0) * 3; if (pay) gemAdd(pay); }
+  crMsg(hit ? CH[i].n + ' wins! You called it +' + pay : CH[i].n + ' wins. Better luck next time', hit ? 'win' : 'lose');
+  if (hit) crConfetti();
+  try { if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred(hit ? 'success' : 'error'); } catch (e) {}
+  crView();
+}
+function crTick(dt) {
+  if (cr.ph !== 'count' && cr.ph !== 'race') return;
+  if (!$('cr').classList.contains('on')) return;
+  if (cr.ph === 'count') {
+    cr.cd -= dt;
+    const n = Math.ceil(cr.cd);
+    if (n >= 1) { if (n !== cr.shown) { cr.shown = n; crMsg(String(n), ''); } }
+    else { cr.ph = 'race'; crMsg('GO!', ''); crRunning(true); }
+    return;
+  }
+  const fin = crSim(dt);
+  crPlace();
+  for (const i of fin) {
+    const pl = $('crTrack').children[i].children[2];
+    pl.textContent = ORD[cr.h[i].place - 1];
+    pl.className = 'pl' + (cr.h[i].place === 1 ? ' p1' : '');
+    if (cr.h[i].place === 1) crWin(i);
+    const r = $('crTrack').children[i].children[1]; r.classList.remove('run');
+  }
+  crCrown();
+  if (cr.placed === 4) {
+    cr.ph = 'done';
+    $('crOrder').textContent = cr.order.map((i, k) => ORD[k] + ' ' + CH[i].n).join('  \u00b7  ');
+    crView();
+  }
+}
+function crInit() {
+  if (!crBuilt) { crBuild(); crReset(); }
+  crPlace(); crView();
+}
+window.addEventListener('resize', crPlace);
+
+/* ===== BET WIDGET (arena / blackjack / chicken) ===== */
+function bStepUp(v) { return v < 100 ? 10 : v < 1000 ? 100 : 1000; }
+function bStepDown(v) { return v <= 100 ? 10 : v <= 1000 ? 100 : 1000; }
+/* ползунок логарифмический: первая треть = 10..100, вторая = 100..1000, третья = 1000..10000 */
+function bPosToVal(p) {
+  const raw = 10 * Math.pow(1000, p / 1000);
+  const q = raw < 1000 ? 10 : 100;
+  return Math.max(10, Math.min(10000, Math.round(raw / q) * q));
+}
+function bValToPos(v) { return Math.round(Math.log(v / 10) / Math.log(1000) * 1000); }
+const BET_CHIPS = [[10, '10'], [50, '50'], [100, '100'], [500, '500'], [1000, '1K'], [10000, '10K']];
+function mkBet(hostId, key, onChange) {
+  const host = $(hostId);
+  let v = 10, ready = false;
+  try { const sv = +localStorage.getItem('bet_' + key); if (sv >= 10 && sv <= 10000 && sv % 10 === 0) v = sv; } catch (e) {}
+  host.className = 'bet';
+  host.innerHTML = '<div class="betrow"><button class="step" data-d="-1" aria-label="Decrease bet">&minus;</button>'
+    + '<div class="betval"><svg class="gem" viewBox="0 0 24 24" aria-hidden="true"><use href="#gem"/></svg><span></span></div>'
+    + '<button class="step" data-d="1" aria-label="Increase bet">+</button></div>'
+    + '<input type="range" min="0" max="1000" step="1" aria-label="Bet amount">'
+    + '<div class="chips">' + BET_CHIPS.map(c => '<button data-bet="' + c[0] + '">' + c[1] + '</button>').join('') + '</div>';
+  const out = host.querySelector('.betval span'), rg = host.querySelector('input');
+  const chips = host.querySelectorAll('[data-bet]');
+  const set = (n, fromSlider) => {
+    v = Math.max(10, Math.min(10000, Math.round(n / 10) * 10));
+    try { localStorage.setItem('bet_' + key, v); } catch (e) {}
+    out.textContent = v.toLocaleString('en-US');
+    const pos = bValToPos(v);
+    if (!fromSlider) rg.value = pos;
+    rg.style.setProperty('--p', (fromSlider ? +rg.value : pos) / 10 + '%');
+    chips.forEach(c => c.classList.toggle('on', +c.dataset.bet === v));
+    if (ready && onChange) onChange(v);
+  };
+  host.querySelectorAll('[data-d]').forEach(b => b.onclick = () => set(+b.dataset.d > 0 ? v + bStepUp(v) : v - bStepDown(v)));
+  chips.forEach(b => b.onclick = () => set(+b.dataset.bet));
+  rg.oninput = () => set(bPosToVal(+rg.value), true);
+  set(v);
+  ready = true;
+  return { get: () => v };
+}
+let betA, betB, betC, bjBet = 0;
+
+/* ===== GEMS ===== */
+let gems = 0;
+try { const g = localStorage.getItem('gems'); gems = g === null ? 1000 : (+g || 0); } catch (e) {}
+function gemRender() { $('gemN').textContent = gems.toLocaleString('en-US'); }
+function gemAdd(n) {
+  gems = Math.max(0, gems + n);
+  try { localStorage.setItem('gems', gems); } catch (e) {}
+  gemRender();
+  if (typeof hud === 'function' && $('game').classList.contains('on')) hud();
+  const pill = $('gemPill');
+  pill.classList.remove('pop'); void pill.offsetWidth; pill.classList.add('pop');
+  if (n > 0) {
+    const f = document.createElement('span');
+    f.className = 'fl'; f.textContent = '+' + n;
+    $('gemBar').appendChild(f);
+    setTimeout(() => { if (f.parentNode) f.parentNode.removeChild(f); }, 1100);
+  }
+}
+gemRender();
+
+betP = mkBet('pBet', 'plinko', () => hud()); betA = mkBet('aBet', 'arena'); betB = mkBet('bjBet', 'bj'); betC = mkBet('crBet', 'cr');
+
 let last = performance.now();
 function loop(now) {
   const dt = Math.min(0.033, (now - last) / 1000); last = now;
   step(dt / 2); step(dt / 2);
   draw();
-  aStep(dt); aDraw();
+  aStep(dt); aDraw(); crTick(dt);
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
 
 $('bPlay').onclick = startGame;
 $('bAgain').onclick = startGame;
-$('bLb').onclick = () => show('lb');
-$('bLb2').onclick = () => show('lb');
 $('bMenu').onclick = () => show('menu');
-$('bBack').onclick = () => show('menu');
+$('gMenu').onclick = () => show('menu');
 $('go').onclick = launch;
 $('bArena').onclick = () => show('amode');
 $('bBot').onclick = () => { show('arena'); aStart('bot'); };
@@ -544,6 +1008,22 @@ $('bFriend').onclick = () => { show('arena'); aStart('friend'); };
 $('bAback').onclick = () => show('menu');
 $('aQuit').onclick = () => show('amode');
 $('aBtn').onclick = aNext;
+$('bBj').onclick = () => { show('bj'); bjView(); };
+$('bjHit').onclick = bjHit;
+$('bjStand').onclick = bjStand;
+$('bjDeal').onclick = bjDealNew;
+$('bjMenu').onclick = () => show('menu');
+$('bCr').onclick = () => { show('cr'); crInit(); };
+$('crGo').onclick = crStart;
+$('crMenu').onclick = () => show('menu');
+$('gemPlus').onclick = () => $('gemModal').classList.add('on');
+$('gemClose').onclick = () => $('gemModal').classList.remove('on');
+$('gemModal').onclick = e => { if (e.target === $('gemModal')) $('gemModal').classList.remove('on'); };
+$('gemClaim').onclick = () => {
+  $('gemModal').classList.remove('on');
+  gemAdd(100);
+  try { if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+};
 </script>
 </body>
 </html>
